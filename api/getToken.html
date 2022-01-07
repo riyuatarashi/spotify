@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8"/>
+</head>
+<body>
+	<h1>Get your token. Please wait</h1>
+
+	<script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		window.onload = () => {
+			const socket = io(),
+				anchors_string = window.location.href.split('#')[1]
+				anchors = {};
+
+			anchors_string.split('&').forEach(param => {
+				let param_split = param.split('='),
+					key = param_split[0],
+					value = param_split[1];
+
+				anchors[key] = value;
+			});
+
+			socket.emit('token', anchors);
+
+			console.log(anchors);
+
+			// setTimeout(window.close, 1000);
+		};
+	</script>
+</body>
+</html>

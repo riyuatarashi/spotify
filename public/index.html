@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<title>Triste</title>
+
+		<link rel="stylesheet" type="text/css" href="css/app.css"/>
+	</head>
+
+	<body class="flex flex-col relative min-h-screen bg-gray-500 bg-opacity-10">
+		<header class="flex py-3 px-5 bg-white">
+			<h1 class="font-bold text-4xl text-red-500">Test</h1>
+
+			<button id="gettoken" class="ml-auto bg-amber-500 rounded px-2">Get token</button>
+
+			<div id="connected" class="relative ml-auto hidden">
+				<p>
+					<input class="border border-black rounded px-2" type="text" id="search" placeholder="search" data-id=""/>
+					<button id="add" class="bg-green-400 hover:bg-green-600 text-white rounded px-2">add</button>
+				</p>
+				<div id="result" class="
+					hidden
+					absolute top-full left-0
+					grid gap-2
+					bg-white
+					border border-gray-700 rounded
+					py-4"><div>
+			</div>
+		</header>
+
+		<main id="container" class="flex justify-center items-center min-h-full"></main>
+
+		<footer class="mt-auto px-5 pt-3 pb-6 text-white text-lg bg-gray-500">
+			<p>愛を込<span class="far fa-heart text-red-400 mx-2"></span>めて作られた萌え共に<span class="fas fa-fire text-yellow-400 ml-2"></span></p>
+		</footer>
+	</body>
+	
+	<script defer src="js/app.js"></script>
+</html>
