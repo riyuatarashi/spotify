@@ -16,17 +16,22 @@ const helper = require('./helper'),
     client_secret = '072f775dbf0d465aa5b739ecbc76cb4c';
 
 try {
+    const log = helper.log;
+
     server.on('request', (request, response) => {
         if(~helper.authorizedExt.indexOf(helper.getFileExt(request))) {
             helper.view(response, './public' + request.url.split('?')[0], helper.getFileExt(request));
         }
         else if(!request.url.match(/^\/socket\.io\//)) {
-            console.log('\n\n=================================\n---------> New request\n----------\n');
+            console.log('└────────────────────────────────────────────────────────────────────────────────────────┘\n\n');
+            console.log('┌────────────────────────────────────────────────────────────────────────────────────────┐');
+            console.log('│                  ------------------> New request                                       │');
+            console.log('├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─  ┤');
 
             const path = request.url.split('?')[0],
                 queryObject = url.parse(request.url, true).query;
 
-            console.log(path);
+            log(path, 'path');
             switch (path) {
                 case '/':
                     helper.view(response, './public/index.html');
@@ -39,6 +44,8 @@ try {
                 default:
                     helper.return404(response);
             }
+
+            console.log('├────────────────────────────────────────────────────────────────────────────────────────┤');
         }
     });
 
@@ -52,7 +59,7 @@ try {
         socket.join(socket_id);
         socket.emit('init', {socket_id});
 
-        console.log(users);
+        log(users, 'All Users');
 
         socket.on('getToken', id => {
             let index = users.findIndex(user => user.id === id);
@@ -70,7 +77,7 @@ try {
             let index = users.findIndex(user => user.id === socket_id);
             if(~index) {
                 users.splice(index, 1);
-                console.log(users);
+                log(users);
             }
         });
 

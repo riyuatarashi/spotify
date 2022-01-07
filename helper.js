@@ -1,17 +1,10 @@
 const fs = require('fs');
 
 function return404(response) {
-    console.log('\t - Other paths have been called. Be careful of Hackers');
+    log('404 not found', 'Response:');
     writeHead(response, 404);
     response.end();
     return 404;
-}
-
-function logFileRead(path) {
-    console.log('\n' +
-        '--- file ---\n' +
-        'Path : ' + path + '\n' +
-        '---\n');
 }
 
 function writeHead(response, code = 200, type = 'html') {
@@ -27,29 +20,27 @@ function writeHead(response, code = 200, type = 'html') {
             'woff2': 'application/font-woff2'
         },
         headers = {
-            'Access-Control-Allow-Headers': 'Content-Type, X-Auth-Token, Origin, Accept, Authorization',
+            'Access-Control-Allow-Headers': 'Content-Type, Accept, Authorization',
             'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
             'Access-Control-Allow-Origin': '*',
             'Content-Type': CONTENT_TYPE[type]
         };
 
-    console.log('\n--------- Head --------');
-    console.log(headers);
-    console.log('---------\n');
+    log(headers, 'Header:')
 
     response.writeHead(code, headers);
 }
 
 function view(response, path, type = 'html') {
-    console.log('Try read file -> ' + path);
+    log(path, 'Try reading file:');
+
     fs.readFile(path, (error, content) => {
         if (error) {
-            console.log('File: ' + path + ' can\'t be read.\n');
-            console.log(error);
+            log(error, 'File: ' + path);
             return return404(response);
         }
 
-        logFileRead(path);
+        log(path, 'File');
 
         writeHead(response, 200, type);
         response.write(content);
@@ -67,9 +58,93 @@ function getFileExt(request) {
     return fileExt[fileExt.length - 1];
 }
 
+function log(data, name = 'Console.Log()') {
+    const getSpaces = (function() {
+            let remains = 0;
+            return (length, divider = 2) => {
+                let maxLength = (88 - length)/divider;
+
+                let spaces = '';
+                for(let i=0; i < Math.floor(maxLength); i++) {
+                    spaces += ' ';
+                }
+
+                if(remains > 0) {
+                    for(let i=0; i < remains; i++) {
+                        spaces += ' ';
+                    }
+
+                    remains = 0;
+                } else  {
+                    remains += (88 - length)%divider;
+                }
+
+                return spaces;
+            };
+        })(),
+        logObject = (obj, indent = ' ') => {
+            if(Array.isArray(obj)) {
+                console.log('│' + indent + '[' + getSpaces(indent.length + 1, 1) + '│');
+
+                obj.forEach(value => {
+                    if(typeof value !== 'object') {
+                        value.toString(10);
+                        let coma = (obj.indexOf(value) < obj.length-1) ? ',' : ' ';
+                        console.log('│' + indent + '    ' + value + coma + getSpaces(indent.length + value.length + 6, 1) + '│');
+                    } else {
+                        logObject(value, indent + '    ');
+                    }
+                });
+
+                console.log('│' + indent + ']' + getSpaces(indent.length + 1, 1) + '│');
+            } else {
+                console.log('│' + indent + '{' + getSpaces(indent.length + 1, 1) + '│');
+
+                Object.keys(obj).forEach(key => {
+                    if(typeof obj[key] === 'string') {
+                        key = key.toString();
+                        obj[key] = obj[key].toString();
+                        let coma = (Object.keys(obj).indexOf(key) < Object.keys(obj).length-1) ? ',' : ' ',
+                            length = indent.length + key.length + obj[key].length + 7;
+                        console.log('│' + indent + '    ' + key + ': ' + obj[key] + coma + getSpaces(length, 1) + '│');
+                    } else {
+                        key = key.toString();
+                        console.log('│' + indent + '    ' + key + ': ' + getSpaces(indent.length + key.length + 6, 1) + '│');
+                        logObject(obj[key],  indent + '    ');
+                    }
+                });
+
+                console.log('│' + indent + '}' + getSpaces(indent.length + 1, 1) + '│');
+            }
+        };
+
+    if(name.length > 0) {
+        console.log('├────────────────────────────────────────────────────────────────────────────────────────┤');
+        console.log('│' + getSpaces(name.length) + name + getSpaces(name.length) + '│');
+        console.log('│ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─  │');
+    }
+
+    switch(typeof data) {
+        case 'number':
+            data = data.toString(10);
+        case 'string':
+            let length = data.length;
+            console.log('│' + getSpaces(length) + data + getSpaces(length) + '│');
+            break;
+
+        case 'object':
+            logObject(data);
+            break;
+    }
+
+    if(name.length > 0) {
+        console.log('├────────────────────────────────────────────────────────────────────────────────────────┤');
+    }
+}
+
 module.exports = {
     return404,
-    logFileRead,
+    log,
     writeHead,
     view,
 
