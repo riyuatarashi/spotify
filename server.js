@@ -7,9 +7,9 @@ const helper = require('./helper'),
 
     io = require('socket.io')(server),
     axios = require('axios'),
-    UUID = require('uuid-js'),
 
     SERVER_PORT = 64123,
+
     users = [],
 
     client_id = '98f7b9b2b7ad48918dbe6cb206e6296f',
@@ -50,18 +50,14 @@ try {
     });
 
     io.on('connect', (socket) => {
-        let socket_id = '';
-        do {
-            socket_id = UUID.create().toString();    
-        } while(users.some(user => user.id !== socket_id));
+        let socket_id = socket.id;
         users.push({id: socket_id});
 
-        socket.join(socket_id);
-        socket.emit('init', {socket_id});
+        socket.emit('init', socket_id);
 
         log(users, 'All Users');
 
-        socket.on('getToken', id => {
+        socket.on('getToken', (id) => {
             let index = users.findIndex(user => user.id === id);
 
             if(~index) {
@@ -73,7 +69,8 @@ try {
 
         /* Disconnect */
 
-        io.on('disconnect', (reason) => {
+        socket.on('disconnect', (reason) => {
+            log(reason, 'Logout:');
             let index = users.findIndex(user => user.id === socket_id);
             if(~index) {
                 users.splice(index, 1);
@@ -89,16 +86,22 @@ try {
          */
 
         socket.on('token', args => {
-            let usr = users.findIndex(user => user.id === args.state);
-            if(~usr) {
-                users[usr].token = {
-                    access_token: args.access_token,
-                    token_type: args.token_type,
-                    expires_in: args.expires_in
-                };
+            if(!args.error) {
+                let usr = users.findIndex(user => user.id === args.state);
+                if(~usr) {
+                    users[usr].token = {
+                        access_token: args.access_token,
+                        token_type: args.token_type,
+                        expires_in: args.expires_in
+                    };
 
-                io.to(users[usr].id).emit('token', users[usr].token);
+                    io.to(users[usr].id).emit('token', users[usr].token);
+                }
+            } else {
+                log(args.error, 'Spotify Error:')
             }
+
+            socket.emit('close');
         });
     });
 

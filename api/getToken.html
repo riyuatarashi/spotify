@@ -22,10 +22,9 @@
 			});
 
 			socket.emit('token', anchors);
-
-			console.log(anchors);
-
-			// setTimeout(window.close, 1000);
+			socket.on('close', () => {
+				window.close();
+			});
 		};
 	</script>
 </body>

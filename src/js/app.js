@@ -9,7 +9,10 @@ window.onload = () => {
     }
 
     const { io } = require('socket.io-client'),
-        socket = io(),
+        socket = io('ws://localhost:64123/', {
+          withCredentials: true,
+          autoConnect: 10000
+        }),
         client_id = '98f7b9b2b7ad48918dbe6cb206e6296f',
 
         playlists_list = document.getElementById('playlists');
@@ -35,9 +38,9 @@ window.onload = () => {
      *
      */
 
-    socket.on('init', (args) => {
-        console.log(args.socket_id);
-        socket_id = args.socket_id;
+    socket.on('init', (id) => {
+        console.log(id);
+        socket_id = id;
 
         socket.emit('getToken', socket_id);
     });

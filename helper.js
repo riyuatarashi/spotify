@@ -154,8 +154,6 @@ module.exports = {
     authorizedExt: [
         'css',
         'js',
-
-        'map',
         
         'eot',
         'svg',
