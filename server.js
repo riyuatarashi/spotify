@@ -51,9 +51,21 @@ try {
 
     io.on('connect', (socket) => {
         let socket_id = socket.id;
-        users.push({id: socket_id});
+        users.push({id: socket_id, socket_id});
 
         socket.emit('init', socket_id);
+        socket.on('init', (user) => {
+            let index = users.findIndex(u => u.id === socket_id);
+            if(~index) users.splice(index, 1);
+
+            socket_id = user.id;
+
+            index = users.findIndex(u => u.id === socket_id);
+            if(~index) { users[index] = user; }
+            else { users.push({...user, ...{socket_id: socket.id}}); }
+
+            log(users, 'All Users - [Updated]');
+        });
 
         log(users, 'All Users');
 
@@ -74,10 +86,9 @@ try {
             let index = users.findIndex(user => user.id === socket_id);
             if(~index) {
                 users.splice(index, 1);
-                log(users);
+                log(users, 'All Users - [Updated - Logout]');
             }
         });
-
 
         /*
          *
@@ -95,7 +106,9 @@ try {
                         expires_in: args.expires_in
                     };
 
-                    io.to(users[usr].id).emit('token', users[usr].token);
+                    log(users[usr].id);
+
+                    io.to(users[usr].socket_id).emit('token', users[usr].token);
                 }
             } else {
                 log(args.error, 'Spotify Error:')

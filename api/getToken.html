@@ -10,7 +10,7 @@
 	<script type="text/javascript">
 		window.onload = () => {
 			const socket = io(),
-				anchors_string = window.location.href.split('#')[1]
+				anchors_string = (~window.location.href.indexOf('#')) ? window.location.href.split('#')[1] : window.location.href.split('?')[1];
 				anchors = {};
 
 			anchors_string.split('&').forEach(param => {

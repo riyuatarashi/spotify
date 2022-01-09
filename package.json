@@ -12,6 +12,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "axios": "^0.24.0",
     "d3": "^7.2.0",
+    "d3-force": "^3.0.0",
     "laravel-mix": "^6.0.39",
     "socket.io": "^4.4.0",
     "socket.io-client": "^4.4.0",
