@@ -216,7 +216,7 @@ window.onload = () => {
                     .attr('viewBox', [0, 0, SVG_PROPS.width, SVG_PROPS.height])
                     .attr('class', 'mb-auto mr-auto')
                     .attr('width', SVG_PROPS.width)
-                    .attr('height', SVG_PROPS.height + 150);
+                    .attr('height', SVG_PROPS.height + 250);
 
     function redrawlocalArray(data = localArray()) {
         const artists = (() => {
