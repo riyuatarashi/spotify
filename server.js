@@ -12,8 +12,8 @@ const helper = require('./helper'),
 
     users = [],
 
-    client_id = '98f7b9b2b7ad48918dbe6cb206e6296f',
-    client_secret = '072f775dbf0d465aa5b739ecbc76cb4c';
+    client_id = 'c744188e9ce24ab99a627346c82b24b1',
+    client_secret = 'f8c4a241589b4dd7850db1f3fb993a4c';
 
 try {
     const log = helper.log;

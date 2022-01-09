@@ -30,7 +30,7 @@ window.onload = () => {
           withCredentials: true,
           autoConnect: 10000
         }),
-        client_id = '98f7b9b2b7ad48918dbe6cb206e6296f',
+        client_id = 'c744188e9ce24ab99a627346c82b24b1',
 
         playlists_list = document.getElementById('playlists');
 
@@ -75,8 +75,8 @@ window.onload = () => {
         } else {
             console.log(id);
             socket_id = localObject({id}).id;
-            socket.emit('getToken', socket_id);
         }
+        socket.emit('getToken', socket_id);
     });
 
     socket.on('token', (args) => {
@@ -93,30 +93,30 @@ window.onload = () => {
             'Authorization': OauthType + ' ' + OauthToken
         };
 
-        console.log('coucou');
-
-        axios({
-            method: 'get',
-            url: 'https://api.spotify.com/v1/me/following?type=artist&limit=25',
-            headers
-        })
-            .then(response => response.data.artists.items)
-            .then(artists => {
-                console.log(artists);
-                artists = artists.map(artist => ({id: artist.id, name: artist.name, follower: artist.followers.total, img: artist.images[2].url}));
-                redrawlocalArray(localArray(artists));
+        if(localArray().length <= 0) {
+            axios({
+                method: 'get',
+                url: 'https://api.spotify.com/v1/me/following?type=artist&limit=25',
+                headers
             })
-            .catch(e => console.log(e));
+                .then(response => response.data.artists.items)
+                .then(artists => {
+                    console.log(artists);
+                    artists = artists.map(artist => ({id: artist.id, name: artist.name, follower: artist.followers.total, img: artist.images[2].url}));
+                    redrawlocalArray(localArray(artists));
+                })
+                .catch(e => console.log(e));
 
-        axios({
-            method: 'get',
-            url: 'https://api.spotify.com/v1/me/top/tracks?limit=50&time_range=long_term',
-            headers
-        })
-            .then(response => {
-                console.log(response);
+            axios({
+                method: 'get',
+                url: 'https://api.spotify.com/v1/me/top/tracks?limit=50&time_range=long_term',
+                headers
             })
-            .catch(e => console.log(e));
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(e => console.log(e));
+        }
 
         setTimeout(() => {
             gettoken.classList.remove('hidden');
@@ -141,6 +141,7 @@ window.onload = () => {
 
     search.addEventListener('input', () => {
         if(search.value != '') {
+            console.log(headers);
             axios({
                 method: 'get',
                 url: 'https://api.spotify.com/v1/search?type=artist&q=' + search.value,
@@ -305,5 +306,5 @@ window.onload = () => {
             );
     }
 
-    if(data.lenght <= 0) { redrawlocalArray(data); }
+    if(data.length > 0) { redrawlocalArray(data); }
 };
