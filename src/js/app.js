@@ -141,7 +141,6 @@ window.onload = () => {
 
     search.addEventListener('input', () => {
         if(search.value != '') {
-            console.log(headers);
             axios({
                 method: 'get',
                 url: 'https://api.spotify.com/v1/search?type=artist&q=' + search.value,
@@ -154,19 +153,21 @@ window.onload = () => {
                     search.dataset.id = '';
 
                     artists.forEach(artist => {
-                        if(result.classList.contains('hidden')) result.classList.remove('hidden');
+                        if(localArray().every(d => d.id !== artist.id)) {
+                            if(result.classList.contains('hidden')) result.classList.remove('hidden');
 
-                        let p = document.createElement('p');
-                        p.classList.add('cursor-pointer', 'hover:bg-gray-200', 'px-4');
-                        p.appendChild(document.createTextNode(artist.name));
+                            let p = document.createElement('p');
+                            p.classList.add('cursor-pointer', 'hover:bg-gray-200', 'px-4');
+                            p.appendChild(document.createTextNode(artist.name));
 
-                        p.addEventListener('click', () => {
-                            if(!result.classList.contains('hidden')) result.classList.add('hidden');
-                            search.value = artist.name;
-                            search.dataset.id = artist.id;
-                        });
+                            p.addEventListener('click', () => {
+                                if(!result.classList.contains('hidden')) result.classList.add('hidden');
+                                search.value = artist.name;
+                                search.dataset.id = artist.id;
+                            });
 
-                        result.appendChild(p);
+                            result.appendChild(p);
+                        }
                     });
                 })
                 .catch(e => console.log(e));
@@ -227,6 +228,8 @@ window.onload = () => {
             return artists;
         })();
 
+        svg.selectAll('g').remove();
+
         const maxValue = d3.max(data, e => e.follower),
             width = (SVG_PROPS.width - SVG_PROPS.padding*2 - 70) / data.length,
             scaling = {
@@ -243,11 +246,11 @@ window.onload = () => {
                             .range(['#ff9c87', '#ff5733'])
                 };
 
-        svg.append('g')
+        svg.append('g').attr('class', 'yAxis')
             .attr('transform', 'translate(70,10)')
             .call(d3.axisLeft(scaling.y));
 
-        svg.append('g')
+        svg.append('g').attr('class', 'xAxis')
             .attr('transform', `translate(70, ${SVG_PROPS.height - SVG_PROPS.padding})`)
             .call(d3.axisBottom(scaling.x))
             .selectAll('text')
@@ -256,7 +259,7 @@ window.onload = () => {
                 .attr('dy', '.15rem')
                 .attr('transform', 'rotate(-65)');
 
-        const bars = svg.append('g')
+        const bars = svg.append('g').attr('class', 'bars')
             .selectAll('rect')
             .data(data)
             .join(
@@ -291,7 +294,7 @@ window.onload = () => {
             .append('title')
             .text(d => d.name + ' - ' + d.follower + ' followers');
 
-        const img = svg.append('g')
+        const img = svg.append('g').attr('class', 'img')
             .selectAll('img')
             .data(data)
             .join(
