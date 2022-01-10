@@ -13,9 +13,14 @@
 		<header class="flex py-3 px-5 bg-white">
 			<h1 class="font-bold text-4xl text-red-500">Spotify Data</h1>
 
-			<button id="gettoken" class="ml-auto bg-amber-400 rounded px-2 text-white">Get token</button>
+			<div class="ml-auto">
+				<button class="clear border border-gray-700 rounded px-2 hover:bg-amber-400" data-type="user">Clear User</button>
+				<button class="clear border border-gray-700 rounded px-2 hover:bg-amber-400" data-type="bars">Clear Bars</button>
+			</div>
 
-			<div id="connected" class="relative ml-auto hidden">
+			<button id="gettoken" class="ml-5 bg-amber-400 rounded px-2 text-white">Get token</button>
+
+			<div id="connected" class="relative ml-5 hidden">
 				<p>
 					<input class="border border-black rounded px-2" type="text" id="search" placeholder="search artist" data-id=""/>
 					<button id="add" class="bg-green-400 hover:bg-green-600 text-white rounded px-2">add</button>

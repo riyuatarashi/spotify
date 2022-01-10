@@ -9,6 +9,7 @@ window.onload = () => {
     }
 
     function localObject(args, obj = 'user') {
+        if(!localStorage.getItem(obj)) { localStorage.setItem(obj, '{}'); }
         let data = JSON.parse(localStorage.getItem(obj)),
             newlocalObject = {...data, ...args};
         localStorage.setItem(obj, JSON.stringify(newlocalObject));
@@ -136,8 +137,18 @@ window.onload = () => {
     let search = document.getElementById('search'),
         result = document.getElementById('result'),
 
+        clears = document.querySelectorAll('.clear'),
+
         add = document.getElementById('add'),
         data = localArray();
+
+    clears.forEach(clear => {
+        clear.addEventListener('click',() => {
+            localStorage.setItem(clear.dataset.type, '');
+            OauthToken = (localObject().token === undefined) ? '' : OauthToken;
+            window.location.reload();
+        });
+    });
 
     search.addEventListener('input', () => {
         if(search.value != '') {
