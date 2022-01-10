@@ -102,7 +102,7 @@ window.onload = () => {
                 .then(response => response.data.artists.items)
                 .then(artists => {
                     console.log(artists);
-                    artists = artists.map(artist => ({id: artist.id, name: artist.name, follower: artist.followers.total, img: artist.images[2].url}));
+                    artists = artists.map(artist => ({id: artist.id, name: artist.name, follower: artist.followers.total, img: artist.images[0].url}));
                     redrawlocalArray(localArray(artists));
                 })
                 .catch(e => console.log(e));
@@ -169,7 +169,7 @@ window.onload = () => {
                         result.appendChild(p);
                     });
                 })
-                .catch(error => console.log(error));
+                .catch(e => console.log(e));
         }
     });
 
@@ -185,7 +185,7 @@ window.onload = () => {
                     console.log(artist);
                     search.value = '';
 
-                    data = localArray([{name: artist.name, follower: artist.followers.total, img: artist.images[0].url}]);
+                    data = localArray([{id: artist.id, name: artist.name, follower: artist.followers.total, img: artist.images[0].url}]);
                     redrawlocalArray(data);
                 })
                 .catch(e => console.log(e));
